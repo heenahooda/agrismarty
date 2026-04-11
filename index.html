@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AgriSafe</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-green-900 to-black text-white min-h-screen">
+
+<!-- HEADER -->
+<header class="flex justify-between items-center p-6">
+    <h1 class="text-2xl font-bold">🌾 AgriSafe</h1>
+
+    <button onclick="toggleMode()" class="px-3 py-1 bg-green-600 rounded">
+        🌙
+    </button>
+</header>
+
+<!-- MAIN CARD -->
+<div class="max-w-xl mx-auto glass p-6 rounded-xl shadow-xl">
+
+    <h2 class="text-xl mb-4">Smart Farming Advisor</h2>
+
+    <input id="location"
+        placeholder="Enter city (e.g. Delhi)"
+        class="w-full p-3 rounded text-black mb-3">
+
+    <select id="crop"
+        class="w-full p-3 rounded text-black mb-3">
+        <option value="">Select Crop</option>
+        <option value="wheat">Wheat</option>
+        <option value="rice">Rice</option>
+        <option value="maize">Maize</option>
+    </select>
+
+    <div class="flex gap-2">
+        <button onclick="getAdvice()"
+            class="flex-1 bg-yellow-500 p-3 rounded font-bold">
+            Analyze
+        </button>
+
+        <button onclick="getLocation()"
+            class="bg-green-500 px-4 rounded">
+            📍
+        </button>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader" class="hidden mt-4 text-center">
+        ⏳ Processing...
+    </div>
+
+    <!-- Output -->
+    <div id="result" class="mt-5 space-y-3"></div>
+
+</div>
+
+<!-- CHATBOT -->
+<button onclick="toggleChat()"
+    class="fixed bottom-6 right-6 bg-green-600 w-14 h-14 rounded-full text-xl">
+    💬
+</button>
+
+<div id="chatWindow"
+    class="hidden fixed bottom-24 right-6 w-72 glass p-4 rounded-lg">
+
+    <div id="chatbox" class="h-40 overflow-y-auto mb-2 text-sm"></div>
+
+    <input id="chatInput"
+        class="w-full p-2 rounded text-black"
+        placeholder="Ask something...">
+
+    <button onclick="sendMessage()"
+        class="w-full mt-2 bg-green-500 p-2 rounded">
+        Send
+    </button>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html> 
+<script type="module" src="./js/main.js"></script>
