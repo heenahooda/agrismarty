@@ -1,97 +1,550 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>AgriSafe</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriSafe — Smart Farming Advisor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  :root {
+    --bg:        #0f1a12;
+    --surface:   #162019;
+    --card:      #1c2b1e;
+    --border:    rgba(255,255,255,0.08);
+    --border-md: rgba(255,255,255,0.14);
+    --green:     #4ade80;
+    --green-dim: rgba(74,222,128,0.12);
+    --green-mid: rgba(74,222,128,0.22);
+    --amber:     #fbbf24;
+    --amber-dim: rgba(251,191,36,0.12);
+    --red:       #f87171;
+    --red-dim:   rgba(248,113,113,0.12);
+    --text:      #e4ede6;
+    --muted:     #7a9b7e;
+    --radius:    10px;
+    --radius-lg: 14px;
+  }
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 1.5rem 1rem 3rem;
+  }
 
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .glass {
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(20px);
-        }
-    </style>
+  .app { max-width: 560px; margin: 0 auto; }
+
+  /* TOPBAR */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .logo-icon {
+    width: 34px; height: 34px;
+    background: var(--green-mid);
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-icon i { color: var(--green); font-size: 18px; }
+  .live-badge {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 500;
+    padding: 3px 10px;
+    background: var(--green-dim);
+    color: var(--green);
+    border-radius: 20px;
+    border: 0.5px solid rgba(74,222,128,0.2);
+  }
+  .live-dot {
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .card-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .9rem;
+  }
+
+  /* FORM */
+  .loc-row { display: flex; gap: 8px; margin-bottom: 10px; }
+  .field { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+  .field label { font-size: 12px; color: var(--muted); }
+  .field input,
+  .field select {
+    width: 100%; height: 40px;
+    padding: 0 11px;
+    background: var(--surface);
+    border: 0.5px solid var(--border-md);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .field input::placeholder { color: var(--muted); }
+  .field input:focus,
+  .field select:focus { border-color: rgba(74,222,128,0.5); }
+  .field select { cursor: pointer; appearance: none; }
+  .field select option { background: #1c2b1e; }
+
+  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+
+  .loc-btn {
+    height: 40px; width: 40px;
+    background: var(--surface);
+    border: 0.5px solid var(--border-md);
+    border-radius: var(--radius);
+    color: var(--muted);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    align-self: flex-end;
+    flex-shrink: 0;
+    transition: border-color .15s, color .15s;
+  }
+  .loc-btn:hover { border-color: rgba(74,222,128,0.4); color: var(--green); }
+
+  .analyze-btn {
+    width: 100%; height: 44px;
+    background: var(--green-mid);
+    border: 0.5px solid rgba(74,222,128,0.35);
+    border-radius: var(--radius);
+    color: var(--green);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    gap: 7px;
+    transition: background .15s, opacity .15s;
+  }
+  .analyze-btn:hover { background: rgba(74,222,128,0.28); }
+  .analyze-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+  /* LOADER */
+  .loader {
+    display: none;
+    align-items: center;
+    gap: 9px;
+    padding: .85rem 0 .25rem;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid var(--border-md);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin .65s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* RESULTS */
+  .results { display: none; flex-direction: column; gap: 10px; margin-top: 1rem; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .stat {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: .65rem .75rem;
+    text-align: center;
+  }
+  .stat-val { font-size: 20px; font-weight: 500; margin-bottom: 2px; }
+  .stat-key { font-size: 11px; color: var(--muted); }
+
+  .result-block {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: .9rem 1rem;
+  }
+  .result-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: .55rem;
+  }
+  .result-header i { font-size: 15px; color: var(--muted); }
+  .result-header span { font-size: 13px; font-weight: 500; }
+  .result-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
+  .result-body strong { color: var(--text); font-weight: 500; }
+
+  .tip-box {
+    margin-top: 8px;
+    padding: .6rem .75rem;
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-left: auto;
+  }
+  .pill-safe   { background: var(--green-dim); color: var(--green); }
+  .pill-warn   { background: var(--amber-dim); color: var(--amber); }
+  .pill-danger { background: var(--red-dim);   color: var(--red); }
+
+  /* CHAT */
+  .chat-label-row {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: .8rem;
+  }
+  .quick-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: .8rem; }
+  .qpill {
+    padding: 4px 11px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border-md);
+    background: var(--surface);
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color .15s, color .15s;
+  }
+  .qpill:hover { border-color: rgba(74,222,128,0.4); color: var(--green); }
+
+  .chatbox {
+    min-height: 90px; max-height: 190px;
+    overflow-y: auto;
+    display: flex; flex-direction: column;
+    gap: 8px;
+    margin-bottom: .75rem;
+    padding-right: 2px;
+  }
+  .chatbox::-webkit-scrollbar { width: 3px; }
+  .chatbox::-webkit-scrollbar-track { background: transparent; }
+  .chatbox::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 3px; }
+
+  .msg {
+    padding: .5rem .75rem;
+    border-radius: var(--radius);
+    font-size: 13px;
+    line-height: 1.55;
+    max-width: 86%;
+  }
+  .msg.user {
+    background: var(--green-mid);
+    color: var(--green);
+    align-self: flex-end;
+    border-radius: var(--radius) var(--radius) 3px var(--radius);
+  }
+  .msg.bot {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    color: var(--text);
+    align-self: flex-start;
+    border-radius: 3px var(--radius) var(--radius) var(--radius);
+  }
+
+  .chat-input-row { display: flex; gap: 8px; }
+  .chat-input-row input {
+    flex: 1; height: 38px;
+    padding: 0 11px;
+    background: var(--surface);
+    border: 0.5px solid var(--border-md);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .chat-input-row input::placeholder { color: var(--muted); }
+  .chat-input-row input:focus { border-color: rgba(74,222,128,0.5); }
+  .send-btn {
+    width: 38px; height: 38px;
+    background: var(--surface);
+    border: 0.5px solid var(--border-md);
+    border-radius: var(--radius);
+    color: var(--muted);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: color .15s, border-color .15s;
+  }
+  .send-btn:hover { color: var(--green); border-color: rgba(74,222,128,0.4); }
+
+  @media (max-width: 480px) {
+    .input-row { grid-template-columns: 1fr; }
+    .stat-val { font-size: 17px; }
+  }
+</style>
 </head>
+<body>
+<div class="app">
 
-<body class="bg-gradient-to-br from-green-900 to-black text-white min-h-screen">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-icon"><i class="ti ti-plant-2"></i></div>
+      AgriSafe
+    </div>
+    <div class="live-badge">
+      <span class="live-dot"></span> Live
+    </div>
+  </div>
 
-<!-- HEADER -->
-<header class="flex justify-between items-center p-6">
-    <h1 class="text-2xl font-bold">🌾 AgriSafe</h1>
+  <!-- MAIN ADVISOR CARD -->
+  <div class="card">
+    <div class="card-label">Smart farming advisor</div>
 
-    <button onclick="toggleMode()" class="px-3 py-1 bg-green-600 rounded">
-        🌙
+    <div class="loc-row">
+      <div class="field">
+        <label>City or region</label>
+        <input id="location" placeholder="e.g. Delhi, Punjab, Bhopal" />
+      </div>
+      <button class="loc-btn" onclick="getLocation()" title="Use my location" aria-label="Detect my location">
+        <i class="ti ti-current-location"></i>
+      </button>
+    </div>
+
+    <div class="input-row">
+      <div class="field">
+        <label>Crop</label>
+        <select id="crop">
+          <option value="">Select crop</option>
+          <option value="wheat">Wheat</option>
+          <option value="rice">Rice</option>
+          <option value="maize">Maize</option>
+          <option value="sugarcane">Sugarcane</option>
+          <option value="cotton">Cotton</option>
+          <option value="soybean">Soybean</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Season</label>
+        <select id="season">
+          <option value="kharif">Kharif (Jun–Oct)</option>
+          <option value="rabi">Rabi (Nov–Apr)</option>
+          <option value="zaid">Zaid (Mar–Jun)</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="analyze-btn" id="analyzeBtn" onclick="getAdvice()">
+      <i class="ti ti-analyze"></i> Analyze crop conditions
     </button>
-</header>
 
-<!-- MAIN CARD -->
-<div class="max-w-xl mx-auto glass p-6 rounded-xl shadow-xl">
-
-    <h2 class="text-xl mb-4">Smart Farming Advisor</h2>
-
-    <input id="location"
-        placeholder="Enter city (e.g. Delhi)"
-        class="w-full p-3 rounded text-black mb-3">
-
-    <select id="crop"
-        class="w-full p-3 rounded text-black mb-3">
-        <option value="">Select Crop</option>
-        <option value="wheat">Wheat</option>
-        <option value="rice">Rice</option>
-        <option value="maize">Maize</option>
-    </select>
-
-    <div class="flex gap-2">
-        <button onclick="getAdvice()"
-            class="flex-1 bg-yellow-500 p-3 rounded font-bold">
-            Analyze
-        </button>
-
-        <button onclick="getLocation()"
-            class="bg-green-500 px-4 rounded">
-            📍
-        </button>
+    <div class="loader" id="loader">
+      <div class="spinner"></div>
+      Fetching field intelligence…
     </div>
 
-    <!-- Loader -->
-    <div id="loader" class="hidden mt-4 text-center">
-        ⏳ Processing...
+    <div class="results" id="results">
+      <div class="stat-row" id="statRow"></div>
+      <div class="result-block" id="weatherBlock"></div>
+      <div class="result-block" id="adviceBlock"></div>
+      <div class="result-block" id="alertBlock"></div>
     </div>
+  </div>
 
-    <!-- Output -->
-    <div id="result" class="mt-5 space-y-3"></div>
+  <!-- CHATBOT CARD -->
+  <div class="card">
+    <div class="chat-label-row">
+      <div class="card-label" style="margin-bottom:0">Field assistant</div>
+    </div>
+    <div class="quick-pills">
+      <span class="qpill" onclick="quickAsk('Best fertilizer for wheat?')">Best fertilizer for wheat?</span>
+      <span class="qpill" onclick="quickAsk('Signs of crop disease?')">Signs of crop disease?</span>
+      <span class="qpill" onclick="quickAsk('When to irrigate rice?')">When to irrigate rice?</span>
+    </div>
+    <div class="chatbox" id="chatbox">
+      <div class="msg bot">Hello! Ask me anything about your crop, soil, or weather conditions.</div>
+    </div>
+    <div class="chat-input-row">
+      <input id="chatInput" placeholder="Ask about soil, pests, irrigation…"
+             onkeydown="if(event.key==='Enter') sendMessage()" />
+      <button class="send-btn" onclick="sendMessage()" aria-label="Send message">
+        <i class="ti ti-send"></i>
+      </button>
+    </div>
+  </div>
 
 </div>
 
-<!-- CHATBOT -->
-<button onclick="toggleChat()"
-    class="fixed bottom-6 right-6 bg-green-600 w-14 h-14 rounded-full text-xl">
-    💬
-</button>
+<script>
+  const cropData = {
+    wheat:     { name:"Wheat",     temp:"15–25°C", water:"450–650mm",   months:"Nov–Apr", tip:"Apply urea at the tillering stage. Avoid waterlogging — wheat roots are highly sensitive." },
+    rice:      { name:"Rice",      temp:"20–35°C", water:"1000–2000mm", months:"Jun–Nov", tip:"Maintain 5cm standing water during vegetative phase. Drain 10 days before harvest." },
+    maize:     { name:"Maize",     temp:"18–32°C", water:"500–800mm",   months:"Jun–Oct", tip:"Top-dress with nitrogen at knee-high stage. Intercrop with legumes to improve soil nitrogen." },
+    sugarcane: { name:"Sugarcane", temp:"20–35°C", water:"1500–2500mm", months:"Feb–Mar", tip:"Trash mulching reduces weed pressure significantly and retains soil moisture." },
+    cotton:    { name:"Cotton",    temp:"21–35°C", water:"700–1200mm",  months:"Apr–Sep", tip:"Scout for bollworm weekly after squaring starts. Avoid excessive nitrogen — it promotes vegetative growth." },
+    soybean:   { name:"Soybean",   temp:"20–30°C", water:"450–700mm",   months:"Jun–Sep", tip:"Inoculate seeds with Rhizobium before sowing to fix atmospheric nitrogen naturally." }
+  };
 
-<div id="chatWindow"
-    class="hidden fixed bottom-24 right-6 w-72 glass p-4 rounded-lg">
+  const weatherSims = [
+    { temp:28, humidity:62, rain:0,  wind:14, status:"safe",   desc:"Conditions look good for field activity today. Low disease pressure expected." },
+    { temp:35, humidity:78, rain:4,  wind:22, status:"warn",   desc:"High humidity is raising fungal risk. Monitor leaf surfaces closely and hold off spraying." },
+    { temp:41, humidity:45, rain:0,  wind:38, status:"danger", desc:"Heat stress alert. Irrigate in early morning only and avoid any field chemical applications." },
+    { temp:22, humidity:55, rain:0,  wind:9,  status:"safe",   desc:"Ideal growing conditions. Low pest pressure and comfortable temperature for field work." }
+  ];
 
-    <div id="chatbox" class="h-40 overflow-y-auto mb-2 text-sm"></div>
+  function getAdvice() {
+    const loc  = document.getElementById('location').value.trim();
+    const crop = document.getElementById('crop').value;
+    if (!loc)  { alert('Please enter a city or region.'); return; }
+    if (!crop) { alert('Please select a crop.'); return; }
 
-    <input id="chatInput"
-        class="w-full p-2 rounded text-black"
-        placeholder="Ask something...">
+    const btn     = document.getElementById('analyzeBtn');
+    const loader  = document.getElementById('loader');
+    const results = document.getElementById('results');
 
-    <button onclick="sendMessage()"
-        class="w-full mt-2 bg-green-500 p-2 rounded">
-        Send
-    </button>
-</div>
+    btn.disabled = true;
+    loader.style.display = 'flex';
+    results.style.display = 'none';
 
-<script src="script.js"></script>
+    setTimeout(() => {
+      loader.style.display = 'none';
+      btn.disabled = false;
 
+      const w = weatherSims[Math.floor(Math.random() * weatherSims.length)];
+      const c = cropData[crop];
+
+      const pillClass  = w.status === 'safe' ? 'pill-safe' : w.status === 'warn' ? 'pill-warn' : 'pill-danger';
+      const pillLabel  = w.status === 'safe' ? 'All clear' : w.status === 'warn' ? 'Monitor' : 'Take action';
+      const irrigation = w.rain > 3 ? 'skip today — rainfall is sufficient' : 'tomorrow morning before 8 AM';
+
+      document.getElementById('statRow').innerHTML = `
+        <div class="stat"><div class="stat-val">${w.temp}°C</div><div class="stat-key">Temperature</div></div>
+        <div class="stat"><div class="stat-val">${w.humidity}%</div><div class="stat-key">Humidity</div></div>
+        <div class="stat"><div class="stat-val">${w.wind} km/h</div><div class="stat-key">Wind</div></div>
+      `;
+
+      document.getElementById('weatherBlock').innerHTML = `
+        <div class="result-header">
+          <i class="ti ti-cloud"></i>
+          <span>Weather — ${loc}</span>
+          <span class="status-pill ${pillClass}">${pillLabel}</span>
+        </div>
+        <div class="result-body">${w.desc} Rainfall today: <strong>${w.rain}mm</strong>.</div>
+      `;
+
+      document.getElementById('adviceBlock').innerHTML = `
+        <div class="result-header">
+          <i class="ti ti-bulb"></i>
+          <span>${c.name} guidance</span>
+        </div>
+        <div class="result-body" style="display:grid;gap:5px">
+          <div>Ideal temperature: <strong>${c.temp}</strong></div>
+          <div>Water requirement: <strong>${c.water}</strong> per season</div>
+          <div>Growing months: <strong>${c.months}</strong></div>
+          <div class="tip-box">${c.tip}</div>
+        </div>
+      `;
+
+      document.getElementById('alertBlock').innerHTML = `
+        <div class="result-header">
+          <i class="ti ti-shield-check"></i>
+          <span>Field status</span>
+        </div>
+        <div class="result-body">
+          Soil moisture index is within normal range. 
+          Next recommended irrigation: <strong>${irrigation}</strong>. 
+          No active pest alerts for ${loc} at this time.
+        </div>
+      `;
+
+      results.style.display = 'flex';
+    }, 1600);
+  }
+
+  function getLocation() {
+    if (!navigator.geolocation) { alert('Geolocation is not supported by your browser.'); return; }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        document.getElementById('location').value = `${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`;
+      },
+      () => { alert('Location permission denied. Please type your city manually.'); }
+    );
+  }
+
+  const botReplies = {
+    fertilizer: "For nitrogen-heavy crops like wheat, apply DAP at sowing and urea at tillering. Always test soil pH first — over-fertilizing acidic soil causes nutrient lockout.",
+    disease:    "Yellow or brown spots usually signal fungal infection. Remove affected tissue, improve row spacing for airflow, and apply a copper-based fungicide early.",
+    irrigat:    "Rice needs standing water during vegetative growth. Wheat needs irrigation at crown root initiation, jointing, and grain filling stages.",
+    pest:       "Check under leaves for aphids and stems for armyworm. Neem oil is a good first response before escalating to chemical pesticides.",
+    soil:       "Optimal pH for most crops is 6–7. Add lime to raise pH or sulfur to lower it. Organic matter significantly improves water retention and aeration.",
+    weather:    "High humidity above 75% raises fungal risk. Wind above 30km/h can cause lodging in tall crops like wheat and maize.",
+    harvest:    "Harvest wheat when grain moisture drops to 14%. For rice, look for 80% golden yellow panicles as the trigger for harvesting."
+  };
+
+  const defaultReplies = [
+    "Good question! Share your crop type and region and I can give more targeted advice.",
+    "That depends on your soil type and current season. Could you share more details about your field?",
+    "I'd recommend checking with your local agricultural extension officer for region-specific guidance as well."
+  ];
+
+  function getReply(msg) {
+    const m = msg.toLowerCase();
+    for (const key in botReplies) {
+      if (m.includes(key)) return botReplies[key];
+    }
+    return defaultReplies[Math.floor(Math.random() * defaultReplies.length)];
+  }
+
+  function appendMsg(text, type) {
+    const box = document.getElementById('chatbox');
+    const div = document.createElement('div');
+    div.className = `msg ${type}`;
+    div.textContent = text;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const msg   = input.value.trim();
+    if (!msg) return;
+    appendMsg(msg, 'user');
+    input.value = '';
+    setTimeout(() => appendMsg(getReply(msg), 'bot'), 650);
+  }
+
+  function quickAsk(q) {
+    document.getElementById('chatInput').value = q;
+    sendMessage();
+  }
+</script>
 </body>
-</html> 
-<script type="module" src="./js/main.js"></script>
+</html>
