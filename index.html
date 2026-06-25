@@ -3,548 +3,469 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AgriSafe — Smart Farming Advisor</title>
+<title>AgriSmart Advisor — Your Farm, Understood</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg:        #0f1a12;
-    --surface:   #162019;
-    --card:      #1c2b1e;
-    --border:    rgba(255,255,255,0.08);
-    --border-md: rgba(255,255,255,0.14);
-    --green:     #4ade80;
-    --green-dim: rgba(74,222,128,0.12);
-    --green-mid: rgba(74,222,128,0.22);
-    --amber:     #fbbf24;
-    --amber-dim: rgba(251,191,36,0.12);
-    --red:       #f87171;
-    --red-dim:   rgba(248,113,113,0.12);
-    --text:      #e4ede6;
-    --muted:     #7a9b7e;
-    --radius:    10px;
-    --radius-lg: 14px;
-  }
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 1.5rem 1rem 3rem;
-  }
-
-  .app { max-width: 560px; margin: 0 auto; }
-
-  /* TOPBAR */
-  .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-  }
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-  .logo-icon {
-    width: 34px; height: 34px;
-    background: var(--green-mid);
-    border-radius: var(--radius);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .logo-icon i { color: var(--green); font-size: 18px; }
-  .live-badge {
-    display: flex; align-items: center; gap: 5px;
-    font-size: 11px; font-weight: 500;
-    padding: 3px 10px;
-    background: var(--green-dim);
-    color: var(--green);
-    border-radius: 20px;
-    border: 0.5px solid rgba(74,222,128,0.2);
-  }
-  .live-dot {
-    width: 6px; height: 6px;
-    background: var(--green);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity: 1; }
-    50%      { opacity: 0.4; }
-  }
-
-  /* CARDS */
-  .card {
-    background: var(--card);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-  }
-  .card-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: .07em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: .9rem;
-  }
-
-  /* FORM */
-  .loc-row { display: flex; gap: 8px; margin-bottom: 10px; }
-  .field { display: flex; flex-direction: column; gap: 5px; flex: 1; }
-  .field label { font-size: 12px; color: var(--muted); }
-  .field input,
-  .field select {
-    width: 100%; height: 40px;
-    padding: 0 11px;
-    background: var(--surface);
-    border: 0.5px solid var(--border-md);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    outline: none;
-    transition: border-color .15s;
-  }
-  .field input::placeholder { color: var(--muted); }
-  .field input:focus,
-  .field select:focus { border-color: rgba(74,222,128,0.5); }
-  .field select { cursor: pointer; appearance: none; }
-  .field select option { background: #1c2b1e; }
-
-  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-
-  .loc-btn {
-    height: 40px; width: 40px;
-    background: var(--surface);
-    border: 0.5px solid var(--border-md);
-    border-radius: var(--radius);
-    color: var(--muted);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    align-self: flex-end;
-    flex-shrink: 0;
-    transition: border-color .15s, color .15s;
-  }
-  .loc-btn:hover { border-color: rgba(74,222,128,0.4); color: var(--green); }
-
-  .analyze-btn {
-    width: 100%; height: 44px;
-    background: var(--green-mid);
-    border: 0.5px solid rgba(74,222,128,0.35);
-    border-radius: var(--radius);
-    color: var(--green);
-    font-size: 14px;
-    font-weight: 500;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    gap: 7px;
-    transition: background .15s, opacity .15s;
-  }
-  .analyze-btn:hover { background: rgba(74,222,128,0.28); }
-  .analyze-btn:disabled { opacity: .45; cursor: not-allowed; }
-
-  /* LOADER */
-  .loader {
-    display: none;
-    align-items: center;
-    gap: 9px;
-    padding: .85rem 0 .25rem;
-    font-size: 13px;
-    color: var(--muted);
-  }
-  .spinner {
-    width: 16px; height: 16px;
-    border: 2px solid var(--border-md);
-    border-top-color: var(--green);
-    border-radius: 50%;
-    animation: spin .65s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* RESULTS */
-  .results { display: none; flex-direction: column; gap: 10px; margin-top: 1rem; }
-
-  .stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
-  .stat {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: .65rem .75rem;
-    text-align: center;
-  }
-  .stat-val { font-size: 20px; font-weight: 500; margin-bottom: 2px; }
-  .stat-key { font-size: 11px; color: var(--muted); }
-
-  .result-block {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: .9rem 1rem;
-  }
-  .result-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: .55rem;
-  }
-  .result-header i { font-size: 15px; color: var(--muted); }
-  .result-header span { font-size: 13px; font-weight: 500; }
-  .result-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
-  .result-body strong { color: var(--text); font-weight: 500; }
-
-  .tip-box {
-    margin-top: 8px;
-    padding: .6rem .75rem;
-    background: var(--card);
-    border-radius: var(--radius);
-    border: 0.5px solid var(--border);
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-
-  .status-pill {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 500;
-    margin-left: auto;
-  }
-  .pill-safe   { background: var(--green-dim); color: var(--green); }
-  .pill-warn   { background: var(--amber-dim); color: var(--amber); }
-  .pill-danger { background: var(--red-dim);   color: var(--red); }
-
-  /* CHAT */
-  .chat-label-row {
-    display: flex; align-items: center;
-    justify-content: space-between;
-    margin-bottom: .8rem;
-  }
-  .quick-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: .8rem; }
-  .qpill {
-    padding: 4px 11px;
-    border-radius: 20px;
-    border: 0.5px solid var(--border-md);
-    background: var(--surface);
-    font-size: 12px;
-    color: var(--muted);
-    cursor: pointer;
-    transition: border-color .15s, color .15s;
-  }
-  .qpill:hover { border-color: rgba(74,222,128,0.4); color: var(--green); }
-
-  .chatbox {
-    min-height: 90px; max-height: 190px;
-    overflow-y: auto;
-    display: flex; flex-direction: column;
-    gap: 8px;
-    margin-bottom: .75rem;
-    padding-right: 2px;
-  }
-  .chatbox::-webkit-scrollbar { width: 3px; }
-  .chatbox::-webkit-scrollbar-track { background: transparent; }
-  .chatbox::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 3px; }
-
-  .msg {
-    padding: .5rem .75rem;
-    border-radius: var(--radius);
-    font-size: 13px;
-    line-height: 1.55;
-    max-width: 86%;
-  }
-  .msg.user {
-    background: var(--green-mid);
-    color: var(--green);
-    align-self: flex-end;
-    border-radius: var(--radius) var(--radius) 3px var(--radius);
-  }
-  .msg.bot {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    color: var(--text);
-    align-self: flex-start;
-    border-radius: 3px var(--radius) var(--radius) var(--radius);
-  }
-
-  .chat-input-row { display: flex; gap: 8px; }
-  .chat-input-row input {
-    flex: 1; height: 38px;
-    padding: 0 11px;
-    background: var(--surface);
-    border: 0.5px solid var(--border-md);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-size: 13px;
-    font-family: 'Inter', sans-serif;
-    outline: none;
-    transition: border-color .15s;
-  }
-  .chat-input-row input::placeholder { color: var(--muted); }
-  .chat-input-row input:focus { border-color: rgba(74,222,128,0.5); }
-  .send-btn {
-    width: 38px; height: 38px;
-    background: var(--surface);
-    border: 0.5px solid var(--border-md);
-    border-radius: var(--radius);
-    color: var(--muted);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: color .15s, border-color .15s;
-  }
-  .send-btn:hover { color: var(--green); border-color: rgba(74,222,128,0.4); }
-
-  @media (max-width: 480px) {
-    .input-row { grid-template-columns: 1fr; }
-    .stat-val { font-size: 17px; }
-  }
-</style>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="app">
 
-  <!-- TOPBAR -->
-  <div class="topbar">
-    <div class="logo">
-      <div class="logo-icon"><i class="ti ti-plant-2"></i></div>
-      AgriSafe
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <svg class="brand-mark" width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <path d="M15 27C15 27 5 21 5 12.5C5 8 8.5 4.5 13 4.5C13.8 4.5 14.5 4.7 15 5C15.5 4.7 16.2 4.5 17 4.5C21.5 4.5 25 8 25 12.5C25 21 15 27 15 27Z" fill="currentColor"/>
+        <path d="M15 27V12" stroke="#1B2B1E" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-name">AgriSmart <em>Advisor</em></span>
     </div>
-    <div class="live-badge">
-      <span class="live-dot"></span> Live
-    </div>
-  </div>
-
-  <!-- MAIN ADVISOR CARD -->
-  <div class="card">
-    <div class="card-label">Smart farming advisor</div>
-
-    <div class="loc-row">
-      <div class="field">
-        <label>City or region</label>
-        <input id="location" placeholder="e.g. Delhi, Punjab, Bhopal" />
-      </div>
-      <button class="loc-btn" onclick="getLocation()" title="Use my location" aria-label="Detect my location">
-        <i class="ti ti-current-location"></i>
+    <div class="topbar-right">
+      <button class="lang-pill" id="langToggle" aria-label="Change language">
+        <span id="langLabel">English</span>
+        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-    </div>
-
-    <div class="input-row">
-      <div class="field">
-        <label>Crop</label>
-        <select id="crop">
-          <option value="">Select crop</option>
-          <option value="wheat">Wheat</option>
-          <option value="rice">Rice</option>
-          <option value="maize">Maize</option>
-          <option value="sugarcane">Sugarcane</option>
-          <option value="cotton">Cotton</option>
-          <option value="soybean">Soybean</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Season</label>
-        <select id="season">
-          <option value="kharif">Kharif (Jun–Oct)</option>
-          <option value="rabi">Rabi (Nov–Apr)</option>
-          <option value="zaid">Zaid (Mar–Jun)</option>
-        </select>
-      </div>
-    </div>
-
-    <button class="analyze-btn" id="analyzeBtn" onclick="getAdvice()">
-      <i class="ti ti-analyze"></i> Analyze crop conditions
-    </button>
-
-    <div class="loader" id="loader">
-      <div class="spinner"></div>
-      Fetching field intelligence…
-    </div>
-
-    <div class="results" id="results">
-      <div class="stat-row" id="statRow"></div>
-      <div class="result-block" id="weatherBlock"></div>
-      <div class="result-block" id="adviceBlock"></div>
-      <div class="result-block" id="alertBlock"></div>
-    </div>
-  </div>
-
-  <!-- CHATBOT CARD -->
-  <div class="card">
-    <div class="chat-label-row">
-      <div class="card-label" style="margin-bottom:0">Field assistant</div>
-    </div>
-    <div class="quick-pills">
-      <span class="qpill" onclick="quickAsk('Best fertilizer for wheat?')">Best fertilizer for wheat?</span>
-      <span class="qpill" onclick="quickAsk('Signs of crop disease?')">Signs of crop disease?</span>
-      <span class="qpill" onclick="quickAsk('When to irrigate rice?')">When to irrigate rice?</span>
-    </div>
-    <div class="chatbox" id="chatbox">
-      <div class="msg bot">Hello! Ask me anything about your crop, soil, or weather conditions.</div>
-    </div>
-    <div class="chat-input-row">
-      <input id="chatInput" placeholder="Ask about soil, pests, irrigation…"
-             onkeydown="if(event.key==='Enter') sendMessage()" />
-      <button class="send-btn" onclick="sendMessage()" aria-label="Send message">
-        <i class="ti ti-send"></i>
+      <button class="icon-btn" id="voiceBtn" aria-label="Voice assistant" title="Ask AgriSmart">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1.5a2.5 2.5 0 0 1 2.5 2.5v5a2.5 2.5 0 0 1-5 0V4A2.5 2.5 0 0 1 9 1.5z" stroke="currentColor" stroke-width="1.3"/><path d="M4 8.5a5 5 0 0 0 10 0M9 13.5v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
       </button>
+      <div class="net-status" id="netStatus" title="Connection status">
+        <span class="net-dot"></span><span class="net-label">Online</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ ONBOARDING ============ -->
+<section id="onboarding" class="onboarding">
+  <div class="onb-progress">
+    <div class="onb-progress-track"><div class="onb-progress-fill" id="onbFill"></div></div>
+    <span class="onb-progress-label" id="onbStepLabel">Step 1 of 4</span>
+  </div>
+
+  <!-- Step 1: Welcome -->
+  <div class="onb-step is-active" data-step="1">
+    <div class="onb-card onb-welcome">
+      <div class="onb-eyebrow">Field notes, day one</div>
+      <h1>Tell us about your farm.<br>We'll handle the rest.</h1>
+      <p class="onb-sub">Four short steps. Then every recommendation you see is built from your soil, your water, your land — not a generic almanac.</p>
+      <button class="btn-primary btn-large" id="startOnboarding">Begin setup</button>
+      <button class="btn-ghost" id="skipOnboarding">Skip with sample farm</button>
     </div>
   </div>
 
+  <!-- Step 2: Personal + Farm Info -->
+  <div class="onb-step" data-step="2">
+    <form class="onb-card" id="formPersonal">
+      <div class="onb-eyebrow">01 — Your details</div>
+      <h2>Who's farming, and where?</h2>
+
+      <div class="field-grid">
+        <label class="field">
+          <span>Farmer name</span>
+          <input type="text" id="farmerName" placeholder="e.g. Ramesh Kumar" required>
+        </label>
+        <label class="field">
+          <span>Preferred language</span>
+          <select id="farmerLang">
+            <option>English</option>
+            <option>हिन्दी (Hindi)</option>
+            <option>ਪੰਜਾਬੀ (Punjabi)</option>
+            <option>मराठी (Marathi)</option>
+            <option>తెలుగు (Telugu)</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>State</span>
+          <input type="text" id="farmerState" placeholder="e.g. Haryana" required>
+        </label>
+        <label class="field">
+          <span>District</span>
+          <input type="text" id="farmerDistrict" placeholder="e.g. Karnal" required>
+        </label>
+        <label class="field">
+          <span>Village</span>
+          <input type="text" id="farmerVillage" placeholder="e.g. Nilokheri">
+        </label>
+        <label class="field">
+          <span>GPS location</span>
+          <button type="button" class="field-btn" id="gpsBtn">
+            <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="2" fill="currentColor"/><path d="M7 1v2.2M7 10.8V13M1 7h2.2M10.8 7H13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span id="gpsLabel">Use current location</span>
+          </button>
+        </label>
+      </div>
+
+      <div class="onb-divider"></div>
+
+      <div class="field-grid">
+        <label class="field">
+          <span>Total land area (acres)</span>
+          <input type="number" id="landArea" placeholder="e.g. 3.5" step="0.1" required>
+        </label>
+        <label class="field">
+          <span>Number of fields</span>
+          <input type="number" id="numFields" placeholder="e.g. 2" required>
+        </label>
+        <label class="field field-wide">
+          <span>Current crop(s)</span>
+          <input type="text" id="currentCrops" placeholder="e.g. Wheat, Mustard">
+        </label>
+      </div>
+
+      <fieldset class="choice-group">
+        <legend>Farming method</legend>
+        <div class="choice-row" id="farmingMethod">
+          <button type="button" class="choice-chip" data-value="Organic">🌱 Organic</button>
+          <button type="button" class="choice-chip" data-value="Natural">🍃 Natural farming</button>
+          <button type="button" class="choice-chip" data-value="Conventional">🚜 Conventional</button>
+        </div>
+      </fieldset>
+
+      <div class="onb-actions">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="submit" class="btn-primary">Continue</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Step 3: Water Profile -->
+  <div class="onb-step" data-step="3">
+    <form class="onb-card" id="formWater">
+      <div class="onb-eyebrow">02 — Water profile</div>
+      <h2>Where does your water come from?</h2>
+      <p class="onb-sub">This shapes irrigation timing and drought-risk alerts — not just a "low/medium/high" guess.</p>
+
+      <fieldset class="choice-group">
+        <legend>Water source <span class="legend-hint">(select all that apply)</span></legend>
+        <div class="choice-row choice-row-wrap" id="waterSource">
+          <button type="button" class="choice-chip" data-value="Borewell">Borewell</button>
+          <button type="button" class="choice-chip" data-value="Open well">Open well</button>
+          <button type="button" class="choice-chip" data-value="Canal">Canal irrigation</button>
+          <button type="button" class="choice-chip" data-value="River">River irrigation</button>
+          <button type="button" class="choice-chip" data-value="Rain-fed">Rain-fed</button>
+          <button type="button" class="choice-chip" data-value="Pond">Pond / reservoir</button>
+          <button type="button" class="choice-chip" data-value="Drip">Drip irrigation</button>
+          <button type="button" class="choice-chip" data-value="Sprinkler">Sprinkler irrigation</button>
+        </div>
+      </fieldset>
+
+      <div class="field-grid">
+        <label class="field">
+          <span>Available throughout the year?</span>
+          <select id="waterYearRound">
+            <option value="yes">Yes, year-round</option>
+            <option value="seasonal">Seasonal only</option>
+            <option value="unreliable">Unpredictable</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Irrigation frequency</span>
+          <select id="irrigationFreq">
+            <option value="daily">Daily</option>
+            <option value="alternate">Every 2-3 days</option>
+            <option value="weekly">Weekly</option>
+            <option value="asneeded">As needed / rain-dependent</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Water reliability</span>
+          <select id="waterReliability">
+            <option value="high">High — rarely runs short</option>
+            <option value="medium">Medium — occasional shortage</option>
+            <option value="low">Low — frequent shortage</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Water quality <span class="legend-hint">(optional)</span></span>
+          <select id="waterQuality">
+            <option value="unknown">Not tested</option>
+            <option value="good">Good — tested, no issues</option>
+            <option value="saline">Slightly saline</option>
+            <option value="poor">Poor quality</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="onb-actions">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="submit" class="btn-primary">Continue</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Step 4: Soil Health Card -->
+  <div class="onb-step" data-step="4">
+    <form class="onb-card" id="formSoil">
+      <div class="onb-eyebrow">03 — Soil health card</div>
+      <h2>What does your soil tell us?</h2>
+      <p class="onb-sub">Enter values from your Soil Health Card, or use typical regional values if you don't have one yet.</p>
+
+      <div class="soil-input-toggle">
+        <button type="button" class="toggle-tab is-active" data-mode="manual">Enter values</button>
+        <button type="button" class="toggle-tab" data-mode="upload">Upload soil report</button>
+      </div>
+
+      <div class="soil-mode" data-mode-panel="manual">
+        <div class="field-grid field-grid-3">
+          <label class="field">
+            <span>Nitrogen (N) <em>kg/ha</em></span>
+            <input type="number" id="soilN" placeholder="e.g. 240" step="1">
+          </label>
+          <label class="field">
+            <span>Phosphorus (P) <em>kg/ha</em></span>
+            <input type="number" id="soilP" placeholder="e.g. 18" step="1">
+          </label>
+          <label class="field">
+            <span>Potassium (K) <em>kg/ha</em></span>
+            <input type="number" id="soilK" placeholder="e.g. 165" step="1">
+          </label>
+          <label class="field">
+            <span>pH value</span>
+            <input type="number" id="soilPH" placeholder="e.g. 6.8" step="0.1" min="0" max="14">
+          </label>
+          <label class="field">
+            <span>Organic carbon <em>%</em></span>
+            <input type="number" id="soilOC" placeholder="e.g. 0.6" step="0.01">
+          </label>
+          <label class="field">
+            <span>Moisture level <em>%</em></span>
+            <input type="number" id="soilMoisture" placeholder="e.g. 22" step="1">
+          </label>
+        </div>
+        <div class="soil-validation" id="soilValidation"></div>
+      </div>
+
+      <div class="soil-mode" data-mode-panel="upload" hidden>
+        <label class="upload-zone" for="soilFileInput">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 18V6m0 0l-5 5m5-5l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 18v3a2 2 0 002 2h14a2 2 0 002-2v-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span>Drop your Soil Health Card PDF or photo here</span>
+          <span class="upload-hint">We'll read N, P, K, pH and organic carbon automatically</span>
+          <input type="file" id="soilFileInput" accept="image/*,.pdf" hidden>
+        </label>
+        <div class="upload-result" id="uploadResult" hidden></div>
+      </div>
+
+      <div class="onb-actions">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="submit" class="btn-primary">Build my farm profile</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ DASHBOARD ============ -->
+<main id="dashboard" class="dashboard" hidden>
+
+  <div class="dash-header">
+    <div>
+      <p class="dash-greeting" id="dashGreeting">Good morning, Ramesh</p>
+      <h1 class="dash-farm-name" id="dashFarmMeta">2 fields · 3.5 acres · Karnal, Haryana</h1>
+    </div>
+    <button class="btn-secondary" id="editProfileBtn">Edit farm profile</button>
+  </div>
+
+  <div class="dash-grid">
+
+    <!-- Farm Health Score -->
+    <section class="card card-health">
+      <div class="card-head">
+        <h3>Farm health score</h3>
+        <span class="card-tag">Updated just now</span>
+      </div>
+      <div class="health-gauge-wrap">
+        <svg viewBox="0 0 200 120" class="health-gauge" id="healthGaugeSvg">
+          <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#3D2E1F" stroke-width="14" stroke-linecap="round" opacity="0.18"/>
+          <path id="gaugeArcSoil" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#7FA66B" stroke-width="14" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+          <circle cx="100" cy="100" r="3" fill="#F5F1E6"/>
+        </svg>
+        <div class="health-score-num">
+          <span id="healthScoreValue">87</span><span class="health-score-max">/100</span>
+        </div>
+      </div>
+      <div class="health-breakdown" id="healthBreakdown"></div>
+    </section>
+
+    <!-- Today's Advice -->
+    <section class="card card-advice">
+      <div class="card-head">
+        <h3>Today's farm advice</h3>
+        <span class="card-tag card-tag-live">Live</span>
+      </div>
+      <div class="advice-list" id="adviceList"></div>
+    </section>
+
+    <!-- Crop Status -->
+    <section class="card card-crop">
+      <div class="card-head">
+        <h3>Crop status</h3>
+        <select class="card-select" id="cropSelector"></select>
+      </div>
+      <div class="crop-stage-track" id="cropStageTrack"></div>
+      <div class="crop-meta-row" id="cropMetaRow"></div>
+    </section>
+
+    <!-- Weather -->
+    <section class="card card-weather">
+      <div class="card-head">
+        <h3>Weather risk</h3>
+        <span class="card-tag" id="weatherLocation">Karnal</span>
+      </div>
+      <div class="weather-now" id="weatherNow"></div>
+      <div class="weather-alerts" id="weatherAlerts"></div>
+      <div class="forecast-strip" id="forecastStrip"></div>
+    </section>
+
+    <!-- Market -->
+    <section class="card card-market">
+      <div class="card-head">
+        <h3>Mandi market intelligence</h3>
+        <span class="card-tag">Nearest mandi</span>
+      </div>
+      <div class="market-price-row" id="marketPriceRow"></div>
+      <svg class="market-trend" id="marketTrendSvg" viewBox="0 0 320 90"></svg>
+      <p class="market-recommendation" id="marketRecommendation"></p>
+    </section>
+
+    <!-- Irrigation -->
+    <section class="card card-irrigation">
+      <div class="card-head">
+        <h3>Smart irrigation advisor</h3>
+      </div>
+      <div class="irrigation-status" id="irrigationStatus"></div>
+      <div class="irrigation-meta" id="irrigationMeta"></div>
+    </section>
+
+    <!-- Soil snapshot -->
+    <section class="card card-soil">
+      <div class="card-head">
+        <h3>Soil snapshot</h3>
+        <button class="card-link" id="viewSoilDetail">Full report →</button>
+      </div>
+      <div class="soil-bars" id="soilBars"></div>
+    </section>
+
+    <!-- Disease Detection -->
+    <section class="card card-disease">
+      <div class="card-head">
+        <h3>Crop check — camera diagnosis</h3>
+      </div>
+      <label class="disease-upload" for="diseaseFileInput" id="diseaseUploadZone">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="13" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 6l1.2-2h5.6L16 6" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span>Take or upload a photo of your crop</span>
+        <span class="upload-hint" id="diseaseHint">Compressed automatically for slow networks</span>
+        <input type="file" id="diseaseFileInput" accept="image/*" hidden>
+      </label>
+      <div class="disease-result" id="diseaseResult" hidden></div>
+    </section>
+
+    <!-- Profit Simulator -->
+    <section class="card card-profit">
+      <div class="card-head">
+        <h3>Farm profit simulator</h3>
+      </div>
+      <div class="profit-inputs">
+        <label class="field field-compact">
+          <span>Seed cost (₹)</span>
+          <input type="number" id="pcSeed" value="2200">
+        </label>
+        <label class="field field-compact">
+          <span>Labour cost (₹)</span>
+          <input type="number" id="pcLabour" value="6000">
+        </label>
+        <label class="field field-compact">
+          <span>Organic inputs (₹)</span>
+          <input type="number" id="pcOrganic" value="1800">
+        </label>
+        <label class="field field-compact">
+          <span>Irrigation cost (₹)</span>
+          <input type="number" id="pcIrrigation" value="1500">
+        </label>
+        <label class="field field-compact">
+          <span>Expected yield (kg)</span>
+          <input type="number" id="pcYield" value="1400">
+        </label>
+        <label class="field field-compact">
+          <span>Market price (₹/kg)</span>
+          <input type="number" id="pcPrice" value="24">
+        </label>
+      </div>
+      <button class="btn-secondary btn-full" id="calcProfitBtn">Calculate profit</button>
+      <div class="profit-result" id="profitResult" hidden></div>
+    </section>
+
+    <!-- Voice Assistant -->
+    <section class="card card-voice">
+      <div class="card-head">
+        <h3>Ask AgriSmart</h3>
+      </div>
+      <div class="voice-chat" id="voiceChat"></div>
+      <div class="voice-suggestions" id="voiceSuggestions"></div>
+      <form class="voice-input-row" id="voiceForm">
+        <button type="button" class="mic-btn" id="micBtn" aria-label="Speak">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5a2 2 0 0 1 2 2v4a2 2 0 0 1-4 0v-4a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.3"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </button>
+        <input type="text" id="voiceInputText" placeholder="Type or speak your question…">
+        <button type="submit" class="btn-primary btn-small">Ask</button>
+      </form>
+    </section>
+
+    <!-- Government Schemes -->
+    <section class="card card-schemes">
+      <div class="card-head">
+        <h3>Government scheme matches</h3>
+      </div>
+      <div class="scheme-list" id="schemeList"></div>
+    </section>
+
+    <!-- Farm Diary -->
+    <section class="card card-diary">
+      <div class="card-head">
+        <h3>Digital farm diary</h3>
+        <button class="card-link" id="addDiaryBtn">+ Add entry</button>
+      </div>
+      <div class="diary-list" id="diaryList"></div>
+    </section>
+
+  </div>
+
+  <div class="offline-banner" id="offlineBanner" hidden>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M5 5.5a7 7 0 0 1 9 1M8 8.5a3.3 3.3 0 0 1 2.2.9M3 8a8 8 0 0 1 1.7-1.9M8 12h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <span>You're offline — showing last synced data from <strong id="offlineSyncTime">9:12 AM</strong>. We'll sync automatically when you're back online.</span>
+  </div>
+
+</main>
+
+<!-- Diary entry modal -->
+<div class="modal-overlay" id="diaryModalOverlay" hidden>
+  <form class="modal-card" id="diaryForm">
+    <h3>Add diary entry</h3>
+    <label class="field">
+      <span>Activity type</span>
+      <select id="diaryType">
+        <option>Irrigation</option>
+        <option>Fertilizer / treatment</option>
+        <option>Sowing</option>
+        <option>Harvest</option>
+        <option>Expense</option>
+        <option>Other</option>
+      </select>
+    </label>
+    <label class="field">
+      <span>Notes</span>
+      <textarea id="diaryNotes" rows="3" placeholder="e.g. Applied Jeevamrit to wheat field 2"></textarea>
+    </label>
+    <label class="field">
+      <span>Cost (₹, optional)</span>
+      <input type="number" id="diaryCost" placeholder="0">
+    </label>
+    <div class="onb-actions">
+      <button type="button" class="btn-ghost" id="diaryCancelBtn">Cancel</button>
+      <button type="submit" class="btn-primary">Save entry</button>
+    </div>
+  </form>
 </div>
 
-<script>
-  const cropData = {
-    wheat:     { name:"Wheat",     temp:"15–25°C", water:"450–650mm",   months:"Nov–Apr", tip:"Apply urea at the tillering stage. Avoid waterlogging — wheat roots are highly sensitive." },
-    rice:      { name:"Rice",      temp:"20–35°C", water:"1000–2000mm", months:"Jun–Nov", tip:"Maintain 5cm standing water during vegetative phase. Drain 10 days before harvest." },
-    maize:     { name:"Maize",     temp:"18–32°C", water:"500–800mm",   months:"Jun–Oct", tip:"Top-dress with nitrogen at knee-high stage. Intercrop with legumes to improve soil nitrogen." },
-    sugarcane: { name:"Sugarcane", temp:"20–35°C", water:"1500–2500mm", months:"Feb–Mar", tip:"Trash mulching reduces weed pressure significantly and retains soil moisture." },
-    cotton:    { name:"Cotton",    temp:"21–35°C", water:"700–1200mm",  months:"Apr–Sep", tip:"Scout for bollworm weekly after squaring starts. Avoid excessive nitrogen — it promotes vegetative growth." },
-    soybean:   { name:"Soybean",   temp:"20–30°C", water:"450–700mm",   months:"Jun–Sep", tip:"Inoculate seeds with Rhizobium before sowing to fix atmospheric nitrogen naturally." }
-  };
-
-  const weatherSims = [
-    { temp:28, humidity:62, rain:0,  wind:14, status:"safe",   desc:"Conditions look good for field activity today. Low disease pressure expected." },
-    { temp:35, humidity:78, rain:4,  wind:22, status:"warn",   desc:"High humidity is raising fungal risk. Monitor leaf surfaces closely and hold off spraying." },
-    { temp:41, humidity:45, rain:0,  wind:38, status:"danger", desc:"Heat stress alert. Irrigate in early morning only and avoid any field chemical applications." },
-    { temp:22, humidity:55, rain:0,  wind:9,  status:"safe",   desc:"Ideal growing conditions. Low pest pressure and comfortable temperature for field work." }
-  ];
-
-  function getAdvice() {
-    const loc  = document.getElementById('location').value.trim();
-    const crop = document.getElementById('crop').value;
-    if (!loc)  { alert('Please enter a city or region.'); return; }
-    if (!crop) { alert('Please select a crop.'); return; }
-
-    const btn     = document.getElementById('analyzeBtn');
-    const loader  = document.getElementById('loader');
-    const results = document.getElementById('results');
-
-    btn.disabled = true;
-    loader.style.display = 'flex';
-    results.style.display = 'none';
-
-    setTimeout(() => {
-      loader.style.display = 'none';
-      btn.disabled = false;
-
-      const w = weatherSims[Math.floor(Math.random() * weatherSims.length)];
-      const c = cropData[crop];
-
-      const pillClass  = w.status === 'safe' ? 'pill-safe' : w.status === 'warn' ? 'pill-warn' : 'pill-danger';
-      const pillLabel  = w.status === 'safe' ? 'All clear' : w.status === 'warn' ? 'Monitor' : 'Take action';
-      const irrigation = w.rain > 3 ? 'skip today — rainfall is sufficient' : 'tomorrow morning before 8 AM';
-
-      document.getElementById('statRow').innerHTML = `
-        <div class="stat"><div class="stat-val">${w.temp}°C</div><div class="stat-key">Temperature</div></div>
-        <div class="stat"><div class="stat-val">${w.humidity}%</div><div class="stat-key">Humidity</div></div>
-        <div class="stat"><div class="stat-val">${w.wind} km/h</div><div class="stat-key">Wind</div></div>
-      `;
-
-      document.getElementById('weatherBlock').innerHTML = `
-        <div class="result-header">
-          <i class="ti ti-cloud"></i>
-          <span>Weather — ${loc}</span>
-          <span class="status-pill ${pillClass}">${pillLabel}</span>
-        </div>
-        <div class="result-body">${w.desc} Rainfall today: <strong>${w.rain}mm</strong>.</div>
-      `;
-
-      document.getElementById('adviceBlock').innerHTML = `
-        <div class="result-header">
-          <i class="ti ti-bulb"></i>
-          <span>${c.name} guidance</span>
-        </div>
-        <div class="result-body" style="display:grid;gap:5px">
-          <div>Ideal temperature: <strong>${c.temp}</strong></div>
-          <div>Water requirement: <strong>${c.water}</strong> per season</div>
-          <div>Growing months: <strong>${c.months}</strong></div>
-          <div class="tip-box">${c.tip}</div>
-        </div>
-      `;
-
-      document.getElementById('alertBlock').innerHTML = `
-        <div class="result-header">
-          <i class="ti ti-shield-check"></i>
-          <span>Field status</span>
-        </div>
-        <div class="result-body">
-          Soil moisture index is within normal range. 
-          Next recommended irrigation: <strong>${irrigation}</strong>. 
-          No active pest alerts for ${loc} at this time.
-        </div>
-      `;
-
-      results.style.display = 'flex';
-    }, 1600);
-  }
-
-  function getLocation() {
-    if (!navigator.geolocation) { alert('Geolocation is not supported by your browser.'); return; }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        document.getElementById('location').value = `${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`;
-      },
-      () => { alert('Location permission denied. Please type your city manually.'); }
-    );
-  }
-
-  const botReplies = {
-    fertilizer: "For nitrogen-heavy crops like wheat, apply DAP at sowing and urea at tillering. Always test soil pH first — over-fertilizing acidic soil causes nutrient lockout.",
-    disease:    "Yellow or brown spots usually signal fungal infection. Remove affected tissue, improve row spacing for airflow, and apply a copper-based fungicide early.",
-    irrigat:    "Rice needs standing water during vegetative growth. Wheat needs irrigation at crown root initiation, jointing, and grain filling stages.",
-    pest:       "Check under leaves for aphids and stems for armyworm. Neem oil is a good first response before escalating to chemical pesticides.",
-    soil:       "Optimal pH for most crops is 6–7. Add lime to raise pH or sulfur to lower it. Organic matter significantly improves water retention and aeration.",
-    weather:    "High humidity above 75% raises fungal risk. Wind above 30km/h can cause lodging in tall crops like wheat and maize.",
-    harvest:    "Harvest wheat when grain moisture drops to 14%. For rice, look for 80% golden yellow panicles as the trigger for harvesting."
-  };
-
-  const defaultReplies = [
-    "Good question! Share your crop type and region and I can give more targeted advice.",
-    "That depends on your soil type and current season. Could you share more details about your field?",
-    "I'd recommend checking with your local agricultural extension officer for region-specific guidance as well."
-  ];
-
-  function getReply(msg) {
-    const m = msg.toLowerCase();
-    for (const key in botReplies) {
-      if (m.includes(key)) return botReplies[key];
-    }
-    return defaultReplies[Math.floor(Math.random() * defaultReplies.length)];
-  }
-
-  function appendMsg(text, type) {
-    const box = document.getElementById('chatbox');
-    const div = document.createElement('div');
-    div.className = `msg ${type}`;
-    div.textContent = text;
-    box.appendChild(div);
-    box.scrollTop = box.scrollHeight;
-  }
-
-  function sendMessage() {
-    const input = document.getElementById('chatInput');
-    const msg   = input.value.trim();
-    if (!msg) return;
-    appendMsg(msg, 'user');
-    input.value = '';
-    setTimeout(() => appendMsg(getReply(msg), 'bot'), 650);
-  }
-
-  function quickAsk(q) {
-    document.getElementById('chatInput').value = q;
-    sendMessage();
-  }
-</script>
+<script src="script.js"></script>
 </body>
 </html>
